@@ -49,8 +49,8 @@ and is not inverted. This is the third and last domain of ```fcn```.
 
 ## More Details
 
-A sub-domain is defined over the range [x<sup>1</sup> --> x<sup>2</sup>)
-inclusive of x<sup>1</sup> and exclusive of x<sup>2</sup>. Each
+A sub-domain is defined over the range [x<sub>1</sub> --> x<sub>2</sub>)
+inclusive of x<sub>1</sub> and exclusive of x<sub>2</sub>. Each
 piecewise function is defined over a sub-domain and scaled to the
 duration. This was done to enable the user to identify a portion of a
 function that is desirble and use it for a particular sub-domain.
