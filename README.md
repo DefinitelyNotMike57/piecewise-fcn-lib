@@ -27,21 +27,21 @@ fcn.add_domain(subfcn::Polynomial::new(3.0,vec![0.0,1.5],vec![4.0,0.0,-4.0],fals
 ### Function 1
 
 The equation
-<img src="https://render.githubusercontent.com/render/math?math=-2x^0+0x^1+2x^2=y">
+<img src="https://render.githubusercontent.com/render/math?math=-2x^0%2B0x^1%2B2x^2=y">
 is evaluated over the region (-1.0,1.0], is scaled to a range of 0.5,
 and is not inverted. This is the first domain of ```fcn```.
 
 ### Function 2
 
 The equation
-<img src="https://render.githubusercontent.com/render/math?math=0x^0+4x^1=y">
+<img src="https://render.githubusercontent.com/render/math?math=0x^0%2B4x^1=y">
 is evaluated over the region (0.0,1.0], is scaled to a range of 1.0,
 and is not inverted. This is the second domain of ```fcn```.
 
 ### Function 3
 
 The equation
-<img src="https://render.githubusercontent.com/render/math?math=4x^0+0x^1-4x^2=y">
+<img src="https://render.githubusercontent.com/render/math?math=4x^0%2B0x^1-4x^2=y">
 is evaluated over the region (0.0,1.5], is scaled to a range of 3.0,
 and is not inverted. This is the third and last domain of ```fcn```.
 
