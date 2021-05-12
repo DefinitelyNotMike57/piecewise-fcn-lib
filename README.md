@@ -1,21 +1,25 @@
 # Piecewise Functions
 
-Provides utilities for users to create customized functions based on
-sub-function building blocks.
+The piecewise function library was created to simplify the generation
+said functions. It provides maximum control to the user when setting up
+sub-functions and there are plans to include more than just polynomials.
 
-## Why use this?
+## License
 
-On several occasions, I have identified the need for a continuous
-x-domain function over some region where different sub-regions behave
-based on different polynomials.
+piecewise-fcn-lib is distributed under the [MIT License](LICENSE.txt).
 
-## How to use
+## Quick Start
+
+### Installation
 
 Add the following line to your Cargo.toml __dependendies__ section.
-UPDATE THIS
+
+piecewise_fcn_lib = { git = "https://github.com/DefinitelyNotMike57/piecewise-fcn-lib", branch="main" }
+
+### Usage
 
 The code segment below is how you would synthesize the piecewise
-function in the image below.
+function shown in the image below.
 
 ```rust
 let mut fcn = Function::new();
