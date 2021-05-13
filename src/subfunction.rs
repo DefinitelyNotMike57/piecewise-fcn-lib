@@ -8,7 +8,7 @@ pub struct Polynomial {
     // space/time/etc. that this Polynomial is valid over.
     duration: f64,
     // The interval for which to define the polynomial.
-    interval: Vec<f64>,
+    interval: (f64,f64),
     // Coefficients of the polynomial. The 0 index is the coefficient of x^0,
     // the 1 index is the coefficient of the x^1 and so on.
     coefficients: Vec<f64>,
@@ -19,19 +19,36 @@ pub struct Polynomial {
     reverse: bool,
 }
 
+pub struct Bump {
+    // Duration insinuates time but it really represents the amount of
+    // space/time/etc. that this Polynomial is valid over.
+    duration: f64,
+    // The interval for which to define the bump (largest interval is -1 to 1)
+    interval: (f64,f64),
+    // Scales amplitude of bump (default: 1.0)
+    scale: f64,
+    // Offsets bump in y-axis (default: 0.0)
+    offset: f64,
+}
+
 /// This defines the common interface for all piecewise types
 ///
 ///
-pub trait Domain {
-
-    fn new(dur: f64, interval: Vec<f64>, coeff: Vec<f64>, reverse: bool) -> Polynomial;
+pub trait SubfunctionOutput {
+    // Subfunction should be able to report how long it is
     fn get_duration(&self) -> f64;
-    ///
+    // Actually generate the function
     fn generate(&self, x: f64) -> Option<f64>;
 }
 
-impl Domain for Polynomial {
-    fn new(dur: f64, interval: Vec<f64>, coeff: Vec<f64>, reverse: bool) -> Polynomial {
+/// This is the factory interface for making subfunctions
+pub trait SubfunctionFactory {
+    make_polynomial(&self,dur: f64, interval: (f64,f64), coeff: Vec<f64>, reverse: bool) -> Box<dyn SubfunctionOutput>;
+    make_bump(&self, dur:f64, interval: (f64,f64), scale:f64, offset:f64 ) -> Box<dyn SubfunctionOutput>;
+}
+
+impl Polynomial {
+    fn new(dur: f64, interval: (f64,f64), coeff: Vec<f64>, reverse: bool) -> Polynomial {
         let out = Polynomial {
             duration: dur,
             interval: interval,
@@ -40,6 +57,9 @@ impl Domain for Polynomial {
         };
         out
     }
+}
+
+impl SubfunctionOutput for Polynomial {
     fn get_duration(&self) -> f64 {
         self.duration
     }
@@ -49,10 +69,10 @@ impl Domain for Polynomial {
             let new_x: f64;
             if self.reverse {
                 new_x =
-                    self.interval[1] - x / self.duration * (self.interval[1] - self.interval[0]);
+                    self.interval.1 - x / self.duration * (self.interval.1 - self.interval.0);
             } else {
                 new_x =
-                    x / self.duration * (self.interval[1] - self.interval[0]) + self.interval[0];
+                    x / self.duration * (self.interval.1 - self.interval.0) + self.interval.0;
             }
             let mut out: f64 = 0.0;
             for idx in self.coefficients.iter().enumerate() {
