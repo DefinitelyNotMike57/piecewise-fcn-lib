@@ -1,3 +1,7 @@
+
+// Make the standard subfunction interface available
+pub use crate::subfunctions::interface::*;
+
 /// Polynomial defines a continuous sub-domain
 ///
 /// This object allows the user to map any interval of a polynomial into a
@@ -19,34 +23,7 @@ pub struct Polynomial {
     reverse: bool,
 }
 
-pub struct Bump {
-    // Duration insinuates time but it really represents the amount of
-    // space/time/etc. that this Polynomial is valid over.
-    duration: f64,
-    // The interval for which to define the bump (largest interval is -1 to 1)
-    interval: (f64,f64),
-    // Scales amplitude of bump (default: 1.0)
-    scale: f64,
-    // Offsets bump in y-axis (default: 0.0)
-    offset: f64,
-}
-
-/// This defines the common interface for all piecewise types
-///
-///
-pub trait SubfunctionOutput {
-    // Subfunction should be able to report how long it is
-    fn get_duration(&self) -> f64;
-    // Actually generate the function
-    fn generate(&self, x: f64) -> Option<f64>;
-}
-
-/// This is the factory interface for making subfunctions
-pub trait SubfunctionFactory {
-    make_polynomial(&self,dur: f64, interval: (f64,f64), coeff: Vec<f64>, reverse: bool) -> Box<dyn SubfunctionOutput>;
-    make_bump(&self, dur:f64, interval: (f64,f64), scale:f64, offset:f64 ) -> Box<dyn SubfunctionOutput>;
-}
-
+/// Constructor for the Polynomial
 impl Polynomial {
     fn new(dur: f64, interval: (f64,f64), coeff: Vec<f64>, reverse: bool) -> Polynomial {
         let out = Polynomial {
