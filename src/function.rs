@@ -1,12 +1,13 @@
-pub use crate::subfunction;
-pub use crate::subfunction::Domain;
+/*
+pub use crate::subfunctions::polynomial::*;
+pub use crate::subfunctions::bump::*;
 
 /// Function joins subfunction subdomains together to form a more
 /// complex function. User can set delay to offset function in
 /// time. Other functions can also be added to synthesize a more
 /// complex response.
 struct Function {
-    pw: Vec<subfunction::Polynomial>,
+    piecewise: Vec<Polynomial>,
     delay: f64,
     fcn: Vec<Function>,
 }
@@ -14,7 +15,7 @@ struct Function {
 impl Function {
     fn new() -> Function {
         let out = Function {
-            pw: Vec::new(),
+            piecewise: Vec::new(),
             delay: 0.0,
             fcn: Vec::new(),
         };
@@ -22,21 +23,21 @@ impl Function {
     }
     fn new_delay(delay:f64) -> Function {
         let out = Function {
-            pw: Vec::new(),
+            piecewise: Vec::new(),
             delay: delay,
             fcn: Vec::new(),
         };
         out
     }
-    fn add_domain(&mut self, sub: subfunction::Polynomial) {
-        self.pw.push(sub);
+    fn add_subfunction(&mut self, sub: Polynomial) {
+        self.piecewise.push(sub);
     }
     fn add_function(&mut self, fcn: Function) {
         self.fcn.push(fcn);
     }
     fn get_duration(&self) -> f64 {
         let mut duration:f64 = self.delay;
-        for domain in self.pw.iter() {
+        for domain in self.piecewise.iter() {
             duration += domain.get_duration();
         }
         for fcn in self.fcn.iter() {
@@ -53,7 +54,7 @@ impl Function {
         }
         let mut result:f64 = 0.0;
         let mut rel_time = x-self.delay;
-        for domain in self.pw.iter() {
+        for domain in self.piecewise.iter() {
             if (rel_time < domain.get_duration()) && (rel_time >= 0.0) {
                 result = domain.generate( rel_time ).unwrap();
             }
@@ -67,15 +68,15 @@ impl Function {
 }
 
 #[cfg(test)]
-mod tests {
+mod function {
     use super::*;
 
     #[test]
     fn basic() {
         let mut a = Function::new();
-        a.add_domain(subfunction::Polynomial::new(1.0,vec![0.0,1.0],vec![7.0,4.0,8.0],false));
-        a.add_domain(subfunction::Polynomial::new(1.0,vec![-1.0,1.0],vec![2.0,0.0,-2.0],false));
-        a.add_domain(subfunction::Polynomial::new(1.0,vec![0.0,1.0],vec![7.0,4.0,8.0],true));
+        a.add_subfunction(Polynomial::new(1.0,vec![0.0,1.0],vec![7.0,4.0,8.0],false));
+        a.add_subfunction(Polynomial::new(1.0,vec![-1.0,1.0],vec![2.0,0.0,-2.0],false));
+        a.add_subfunction(Polynomial::new(1.0,vec![0.0,1.0],vec![7.0,4.0,8.0],true));
         let x: Vec<f64> = vec![
             0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1., 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
             1.8, 1.9, 2., 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9,
@@ -93,9 +94,9 @@ mod tests {
     #[test]
     fn stacked() {
         let mut a = Function::new();
-        a.add_domain(subfunction::Polynomial::new(1.0,vec![-1.0,1.0],vec![2.0,0.0,-2.0],false));
+        a.add_subfunction(Polynomial::new(1.0,vec![-1.0,1.0],vec![2.0,0.0,-2.0],false));
         let mut b = Function::new();
-        b.add_domain(subfunction::Polynomial::new(1.0,vec![-1.0,1.0],vec![-2.0,0.0,2.0],false));
+        b.add_subfunction(Polynomial::new(1.0,vec![-1.0,1.0],vec![-2.0,0.0,2.0],false));
         a.add_function(b);
 
         for x in 0..100 {
@@ -105,13 +106,13 @@ mod tests {
     #[test]
     fn delay() {
         let mut a = Function::new();
-        a.add_domain(subfunction::Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
+        a.add_subfunction(Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
         let mut b = Function::new_delay(0.25);
-        b.add_domain(subfunction::Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
+        b.add_subfunction(Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
         let mut c = Function::new_delay(0.5);
-        c.add_domain(subfunction::Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
+        c.add_subfunction(Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
         let mut d = Function::new_delay(0.75);
-        d.add_domain(subfunction::Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
+        d.add_subfunction(Polynomial::new(1.0,vec![0.0,1.0],vec![2.0],false));
         c.add_function(d);
         b.add_function(c);
         a.add_function(b);
@@ -125,3 +126,4 @@ mod tests {
         assert_eq!( Some(2.0), a.generate(1.625) );
     }
 }
+*/

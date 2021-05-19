@@ -1,4 +1,4 @@
 
-pub mod subfunction;
+pub mod factory;
 pub mod function;
 

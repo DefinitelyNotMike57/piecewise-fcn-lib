@@ -1,6 +1,6 @@
 
 // Make the standard subfunction interface available
-pub use crate::subfunctions::interface::*;
+use crate::factory::interface::SubfunctionOutput;
 
 /// Polynomial defines a continuous sub-domain
 ///
@@ -45,11 +45,9 @@ impl SubfunctionOutput for Polynomial {
         if (x >= 0.0) && (x < self.duration) {
             let new_x: f64;
             if self.reverse {
-                new_x =
-                    self.interval.1 - x / self.duration * (self.interval.1 - self.interval.0);
+                new_x = self.interval.1 - x / self.duration * (self.interval.1 - self.interval.0);
             } else {
-                new_x =
-                    x / self.duration * (self.interval.1 - self.interval.0) + self.interval.0;
+                new_x = x / self.duration * (self.interval.1 - self.interval.0) + self.interval.0;
             }
             let mut out: f64 = 0.0;
             for idx in self.coefficients.iter().enumerate() {
