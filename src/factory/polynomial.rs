@@ -65,19 +65,19 @@ mod tests {
 
     #[test]
     fn polynomial() {
-        let a = Polynomial::new(1.0, vec![0.0, 1.0], vec![4.0, 5.0], false);
+        let a = Polynomial::new(1.0, (0.0, 1.0), vec![4.0, 5.0], false);
         assert_eq!(Some(4.0), a.generate(0.0));
         assert_eq!(Some(6.5), a.generate(0.5));
     }
     #[test]
     fn out_of_bounds() {
-        let a = Polynomial::new(1.0, vec![0.0, 1.0], vec![4.0, 5.0], false);
+        let a = Polynomial::new(1.0, (0.0, 1.0), vec![4.0, 5.0], false);
         assert_eq!(None, a.generate(-0.5));
         assert_eq!(None, a.generate(1.5));
     }
     #[test]
     fn reverse() {
-        let a = Polynomial::new(1.0, vec![0.0, 1.0], vec![4.0, 5.0], true);
+        let a = Polynomial::new(1.0, (0.0, 1.0), vec![4.0, 5.0], true);
         assert_eq!(Some(9.0), a.generate(0.0));
     }
 }
