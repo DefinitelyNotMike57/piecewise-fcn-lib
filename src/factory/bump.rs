@@ -38,7 +38,7 @@ impl SubfunctionOutput for Bump {
             let new_x = x / self.duration * (self.interval.1 - self.interval.0) + self.interval.0;
             // The bump function only works between -1.0 and 1.0
             if (new_x > -1.0) && (new_x < 1.0) {
-                result = Some((-1.0 / (1.0 - new_x.exp2())).exp());
+                result = Some((-1.0 / (new_x.powf(2.0))).exp());
             } else {
                 result = Some(0.0);
             }
@@ -48,18 +48,26 @@ impl SubfunctionOutput for Bump {
 }
 
 #[cfg(test)]
-mod bump {
+mod tests {
     use super::*;
 
     #[test]
     fn normal() {
-        let a = Bump::new(1.0, (-1.0, 1.0), 5.0, 1.0);
-        assert_eq!(Some(6.0), a.generate(0.5));
+        let a = Bump::new(1.0, (-1.0, 1.0), 1.0, 0.0);
+        assert_eq!(Some(1.0), a.generate(0.5));
+        assert_eq!(Some(0.0), a.generate(0.0));
+        assert_eq!(Some(0.0), a.generate(1.0));
+        assert_eq!(None, a.generate(-0.5));
+        assert_eq!(None, a.generate( 1.5));
     }
     #[test]
-    fn out_of_bounds() {
+    fn scale() {
         let a = Bump::new(1.0, (-1.0, 1.0), 5.0, 1.0);
-        assert_eq!(None, a.generate(-0.5));
-        assert_eq!(None, a.generate(1.5));
+        assert_eq!(Some(6.0), a.generate(0.5));
+        assert_eq!(Some(1.0), a.generate(0.0));
+        assert_eq!(Some(1.0), a.generate(1.0));
+    }
+    fn offset() {
+
     }
 }
