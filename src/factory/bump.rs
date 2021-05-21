@@ -5,7 +5,7 @@ use crate::factory::interface::SubfunctionOutput;
 
 pub struct Bump {
     // Duration insinuates time but it really represents the amount of
-    // space/time/etc. that this Polynomial is valid over.
+    // space/time/etc. that this function is valid over.
     duration: f64,
     // The interval for which to define the bump (function values outside -1.0->1.0 will be zero)
     interval: (f64, f64),
@@ -34,11 +34,11 @@ impl SubfunctionOutput for Bump {
     }
     fn generate(&self, x: f64) -> Option<f64> {
         let mut result = None;
-        if (x >= 0.0) && (x < self.duration) {
+        if ( x >= 0.0 ) && ( x < self.duration ) {
             let new_x = x / self.duration * (self.interval.1 - self.interval.0) + self.interval.0;
             // The bump function only works between -1.0 and 1.0
             if (new_x > -1.0) && (new_x < 1.0) {
-                result = Some((-1.0 / (new_x.powf(2.0))).exp());
+                result = Some( self.scale * ( new_x / ( new_x.powf( 2.0 ) - 1.0 ) ).exp() + self.offset );
             } else {
                 result = Some(0.0);
             }
@@ -56,18 +56,20 @@ mod tests {
         let a = Bump::new(1.0, (-1.0, 1.0), 1.0, 0.0);
         assert_eq!(Some(1.0), a.generate(0.5));
         assert_eq!(Some(0.0), a.generate(0.0));
-        assert_eq!(Some(0.0), a.generate(1.0));
-        assert_eq!(None, a.generate(-0.5));
-        assert_eq!(None, a.generate( 1.5));
+        assert_eq!(None     , a.generate(1.0));
+        assert_eq!(None     , a.generate(-0.5));
+        assert_eq!(None     , a.generate( 1.5));
     }
+
     #[test]
     fn scale() {
-        let a = Bump::new(1.0, (-1.0, 1.0), 5.0, 1.0);
-        assert_eq!(Some(6.0), a.generate(0.5));
-        assert_eq!(Some(1.0), a.generate(0.0));
-        assert_eq!(Some(1.0), a.generate(1.0));
+        let a = Bump::new(1.0, (-1.0, 1.0), 5.0, 0.0);
+        assert_eq!(Some(5.0), a.generate(0.5));
     }
-    fn offset() {
 
+    #[test]
+    fn offset() {
+        let a = Bump::new(1.0, (-1.0, 1.0), 1.0, 2.0);
+        assert_eq!(Some(3.0), a.generate(0.5));
     }
 }
