@@ -46,7 +46,7 @@ impl SubfunctionOutput for Bump {
       let new_x = x / self.duration * (self.interval.1 - self.interval.0) + self.interval.0;
       // The bump function only works between -1.0 and 1.0
       if (new_x > -1.0) && (new_x < 1.0) {
-        result = Some(self.scale * (new_x / (new_x.powf(2.0) - 1.0)).exp() + self.offset);
+        result = Some(self.scale * ( new_x.powf(2.0) / (new_x.powf(2.0) - 1.0)).exp() + self.offset);
       } else {
         result = Some(0.0);
       }
