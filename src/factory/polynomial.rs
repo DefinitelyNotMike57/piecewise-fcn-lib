@@ -1,4 +1,4 @@
-// Make the standard subfunction interface available
+/// Make the standard subfunction interface available
 use crate::factory::interface::SubfunctionOutput;
 
 /// Polynomial defines a continuous sub-domain
