@@ -1,4 +1,3 @@
-use std::cmp;
 
 // Make the standard subfunction interface available
 use crate::factory::interface::SubfunctionOutput;
