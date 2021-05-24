@@ -1,4 +1,3 @@
-
 // Make the standard subfunction interface available
 use crate::factory::interface::SubfunctionOutput;
 
@@ -62,17 +61,17 @@ mod tests {
   #[test]
   fn normal() {
     let a = Bump::new(2.0, (-1.0, 1.0), 1.0, 0.0);
-    assert_eq!(0.00, (a.generate(0.0).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.01, (a.generate(0.1).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.17, (a.generate(0.2).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.38, (a.generate(0.3).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.57, (a.generate(0.4).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.72, (a.generate(0.5).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.83, (a.generate(0.6).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.91, (a.generate(0.7).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.96, (a.generate(0.8).unwrap()*100.0).round()/100.0);
-    assert_eq!(0.99, (a.generate(0.9).unwrap()*100.0).round()/100.0);
-    assert_eq!(1.00, (a.generate(1.0).unwrap()*100.0).round()/100.0);
+    assert_eq!(0.00, (a.generate(0.0).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.01, (a.generate(0.1).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.17, (a.generate(0.2).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.38, (a.generate(0.3).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.57, (a.generate(0.4).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.72, (a.generate(0.5).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.83, (a.generate(0.6).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.91, (a.generate(0.7).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.96, (a.generate(0.8).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(0.99, (a.generate(0.9).unwrap() * 100.0).round() / 100.0);
+    assert_eq!(1.00, (a.generate(1.0).unwrap() * 100.0).round() / 100.0);
   }
 
   #[test]

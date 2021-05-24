@@ -1,6 +1,6 @@
-mod bump;
-mod interface;
-mod polynomial;
+pub mod bump;
+pub mod interface;
+pub mod polynomial;
 
 use interface::SubfunctionOutput;
 
@@ -22,7 +22,7 @@ pub trait SubfunctionFactory {
   ) -> Box<dyn SubfunctionOutput>;
 }
 
-struct Factory;
+pub struct Factory;
 
 impl SubfunctionFactory for Factory {
   fn polynomial(
@@ -60,7 +60,7 @@ mod tests {
   #[test]
   fn bump() {
     let factory = Factory;
-    let a = factory.bump( 1.0, (-1.0, 1.0), 1.0, 0.0 );
+    let a = factory.bump(1.0, (-1.0, 1.0), 1.0, 0.0);
     assert_eq!(Some(1.0), a.generate(0.5));
   }
 }
