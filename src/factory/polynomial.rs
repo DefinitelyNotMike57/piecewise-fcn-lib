@@ -24,6 +24,7 @@ pub struct Polynomial {
 
 /// Constructor for the Polynomial
 impl Polynomial {
+  /// Creates a new polynomial function
   pub fn new(
     dur: f64,
     interval: (f64, f64),

@@ -1,6 +1,13 @@
 // Make the standard subfunction interface available
 use crate::factory::interface::SubfunctionOutput;
 
+/// The bump function
+///
+/// The bump function requires four inputs upon creation:
+/// * Duration: Length that the user wants to use this function for
+/// * Interval: The bump function is defined over (-1,1) any interval outside of those bounds is set to the offset value
+/// * Scale: Scale factor to control the amplitude of the bump
+/// * Offset: Value by which to offset the bump
 pub struct Bump {
   // Duration insinuates time but it really represents the amount of
   // space/time/etc. that this function is valid over.
@@ -15,6 +22,7 @@ pub struct Bump {
 
 /// Constructor for the Bump
 impl Bump {
+  /// Creates a new bump function
   pub fn new(
     dur: f64,
     interval: (f64, f64),
@@ -46,7 +54,7 @@ impl SubfunctionOutput for Bump {
       if (new_x > -1.0) && (new_x < 1.0) {
         result = Some(self.scale * (new_x.powf(2.0) / (new_x.powf(2.0) - 1.0)).exp() + self.offset);
       } else {
-        result = Some(0.0);
+        result = Some(self.offset);
       }
     }
     result
@@ -82,7 +90,15 @@ mod tests {
 
   #[test]
   fn offset() {
-    let a = Bump::new(1.0, (-1.0, 1.0), 1.0, 2.0);
+    let a = Bump::new(1.0, (-2.0, 2.0), 1.0, 2.0);
+    assert_eq!(Some(2.0), a.generate(0.0));
     assert_eq!(Some(3.0), a.generate(0.5));
+    assert_eq!(Some(2.0), a.generate(0.9));
+  }
+  #[test]
+  fn out_of_bounds() {
+    let a = Bump::new(1.0, (-2.0, 2.0), 1.0, 2.0);
+    assert_eq!(None, a.generate(-0.1));
+    assert_eq!(None, a.generate( 1.1));
   }
 }

@@ -1,11 +1,17 @@
-pub mod bump;
+/// Definition of subfunction interface
 pub mod interface;
+
+/// Definition of polynomial
 pub mod polynomial;
+
+/// Definition of bump
+pub mod bump;
 
 use interface::SubfunctionOutput;
 
 /// This is the factory interface for making subfunctions
 pub trait SubfunctionFactory {
+  /// Generator for the polynomial function
   fn polynomial(
     &self,
     dur: f64,
@@ -13,6 +19,7 @@ pub trait SubfunctionFactory {
     coeff: Vec<f64>,
     reverse: bool,
   ) -> Box<dyn SubfunctionOutput>;
+  /// Generator for the bump function
   fn bump(
     &self,
     dur: f64,
@@ -22,6 +29,7 @@ pub trait SubfunctionFactory {
   ) -> Box<dyn SubfunctionOutput>;
 }
 
+/// Factory to generate all subfunctions
 pub struct Factory;
 
 impl SubfunctionFactory for Factory {
