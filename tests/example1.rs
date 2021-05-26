@@ -1,4 +1,5 @@
 use piecewise_fcn_lib as pw;
+use pw::factory::interface::FunctionOutput;
 
 use std::fs::File;
 use std::io::prelude::*;

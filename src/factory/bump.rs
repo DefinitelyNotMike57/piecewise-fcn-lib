@@ -1,5 +1,5 @@
 // Make the standard subfunction interface available
-use crate::factory::interface::SubfunctionOutput;
+use crate::factory::interface::FunctionOutput;
 
 /// The bump function
 ///
@@ -39,7 +39,7 @@ impl Bump {
   }
 }
 
-impl SubfunctionOutput for Bump {
+impl FunctionOutput for Bump {
   fn get_duration(&self) -> f64 {
     self.duration
   }

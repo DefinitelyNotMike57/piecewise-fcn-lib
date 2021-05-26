@@ -1,12 +1,12 @@
 use crate::factory;
-use crate::factory::interface;
+use crate::factory::interface::FunctionOutput;
 
 /// Function joins subfunction subdomains together to form a more
 /// complex function. User can set delay to offset function in
 /// time. Other functions can also be added to synthesize a more
 /// complex response.
 pub struct Function {
-  piecewise: Vec<Box<dyn interface::SubfunctionOutput>>,
+  piecewise: Vec<Box<dyn FunctionOutput>>,
   delay: f64,
   fcn: Vec<Function>,
 }
@@ -30,7 +30,7 @@ impl Function {
   }
   pub fn add_subfunction(
     &mut self,
-    sub: Box<dyn interface::SubfunctionOutput>,
+    sub: Box<dyn FunctionOutput>,
   ) {
     self.piecewise.push(sub);
   }
@@ -40,7 +40,10 @@ impl Function {
   ) {
     self.fcn.push(fcn);
   }
-  pub fn get_duration(&self) -> f64 {
+}
+
+impl FunctionOutput for Function {
+  fn get_duration(&self) -> f64 {
     let mut duration: f64 = self.delay;
     for domain in self.piecewise.iter() {
       duration += domain.get_duration();
@@ -53,7 +56,7 @@ impl Function {
     }
     duration
   }
-  pub fn generate(
+  fn generate(
     &self,
     x: f64,
   ) -> Option<f64> {

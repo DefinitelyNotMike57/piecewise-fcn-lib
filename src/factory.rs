@@ -7,7 +7,7 @@ pub mod polynomial;
 /// Definition of bump
 pub mod bump;
 
-use interface::SubfunctionOutput;
+use interface::FunctionOutput;
 
 /// Factory to generate all subfunctions
 pub struct Factory;
@@ -19,7 +19,7 @@ impl Factory {
     interval: (f64, f64),
     coeff: Vec<f64>,
     reverse: bool,
-  ) -> Box<dyn SubfunctionOutput> {
+  ) -> Box<dyn FunctionOutput> {
     let new = Box::new(polynomial::Polynomial::new(dur, interval, coeff, reverse));
     new
   }
@@ -29,7 +29,7 @@ impl Factory {
     interval: (f64, f64),
     scale: f64,
     offset: f64,
-  ) -> Box<dyn SubfunctionOutput> {
+  ) -> Box<dyn FunctionOutput> {
     let new = Box::new(bump::Bump::new(dur, interval, scale, offset));
     new
   }

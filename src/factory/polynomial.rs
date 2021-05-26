@@ -1,5 +1,5 @@
 /// Make the standard subfunction interface available
-use crate::factory::interface::SubfunctionOutput;
+use crate::factory::interface::FunctionOutput;
 
 /// Polynomial defines a continuous sub-domain
 ///
@@ -41,7 +41,7 @@ impl Polynomial {
   }
 }
 
-impl SubfunctionOutput for Polynomial {
+impl FunctionOutput for Polynomial {
   fn get_duration(&self) -> f64 {
     self.duration
   }

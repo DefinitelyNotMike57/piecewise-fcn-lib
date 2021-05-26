@@ -2,7 +2,7 @@
 ///
 /// All subfunctions should be able to report how long they are and based on some input should be
 /// able to generate an output.
-pub trait SubfunctionOutput {
+pub trait FunctionOutput {
   /// Subfunction should be able to report how long it is
   fn get_duration(&self) -> f64;
   /// Actually generate the function
