@@ -40,7 +40,7 @@ impl Function {
   ) {
     self.fcn.push(fcn);
   }
-  fn get_duration(&self) -> f64 {
+  pub fn get_duration(&self) -> f64 {
     let mut duration: f64 = self.delay;
     for domain in self.piecewise.iter() {
       duration += domain.get_duration();
