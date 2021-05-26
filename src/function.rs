@@ -1,4 +1,3 @@
-use crate::factory;
 use crate::factory::interface::FunctionOutput;
 
 /// Function joins subfunction subdomains together to form a more
@@ -12,6 +11,7 @@ pub struct Function {
 }
 
 impl Function {
+  /// Creates a new function with default values
   pub fn new() -> Function {
     let out = Function {
       piecewise: Vec::new(),
@@ -20,6 +20,7 @@ impl Function {
     };
     out
   }
+  /// Creates a new function with a delay offset
   pub fn new_delay(delay: f64) -> Function {
     let out = Function {
       piecewise: Vec::new(),
@@ -28,12 +29,14 @@ impl Function {
     };
     out
   }
+  /// Supports addition of any output from the Factory
   pub fn add_subfunction(
     &mut self,
     sub: Box<dyn FunctionOutput>,
   ) {
     self.piecewise.push(sub);
   }
+  /// Supports addition of any other Function
   pub fn add_function(
     &mut self,
     fcn: Function,
@@ -81,6 +84,7 @@ impl FunctionOutput for Function {
 #[cfg(test)]
 mod tests {
   use super::*;
+  use crate::factory;
 
   #[test]
   fn basic() {

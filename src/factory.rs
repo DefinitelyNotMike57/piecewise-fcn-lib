@@ -13,6 +13,7 @@ use interface::FunctionOutput;
 pub struct Factory;
 
 impl Factory {
+  /// Generates a polynomial
   pub fn polynomial(
     &self,
     dur: f64,
@@ -23,6 +24,7 @@ impl Factory {
     let new = Box::new(polynomial::Polynomial::new(dur, interval, coeff, reverse));
     new
   }
+  /// Generates a bump
   pub fn bump(
     &self,
     dur: f64,
