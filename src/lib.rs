@@ -26,8 +26,11 @@ use std::io::prelude::*;
 use std::path::Path;
 
 /// Utility for writing functions to a file
-pub fn write_to_file( fcn: Box<dyn factory::interface::FunctionOutput>, sample_rate_hz: f64, file_name: String ) {
-
+pub fn write_to_file(
+  fcn: Box<dyn factory::interface::FunctionOutput>,
+  sample_rate_hz: f64,
+  file_name: String,
+) {
   let num_samples: u64 = (fcn.get_duration() * sample_rate_hz).floor() as u64;
 
   let path = Path::new(&file_name);
