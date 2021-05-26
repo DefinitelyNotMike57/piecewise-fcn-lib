@@ -99,6 +99,6 @@ mod tests {
   fn out_of_bounds() {
     let a = Bump::new(1.0, (-2.0, 2.0), 1.0, 2.0);
     assert_eq!(None, a.generate(-0.1));
-    assert_eq!(None, a.generate( 1.1));
+    assert_eq!(None, a.generate(1.1));
   }
 }

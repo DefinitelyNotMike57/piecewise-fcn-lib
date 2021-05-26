@@ -11,29 +11,29 @@ use std::path::Path;
 ///
 #[test]
 fn example1() {
-    let factory = pw::factory::Factory;
-    let mut fcn1 = pw::function::Function::new();
-    fcn1.add_subfunction( factory.polynomial( 1.0,(0.0,1.0),vec![0.0,0.0,1.0],false) );
-    fcn1.add_subfunction( factory.bump( 1.0,(0.0,1.0),2.0,0.0) );
+  let factory = pw::factory::Factory;
+  let mut fcn1 = pw::function::Function::new();
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], false));
+  fcn1.add_subfunction(factory.bump(1.0, (0.0, 1.0), 2.0, 0.0));
 
-    let sample_rate_hz: f64 = 1000.0;
-    let num_samples: u64 = (fcn1.get_duration() * sample_rate_hz).floor() as u64;
+  let sample_rate_hz: f64 = 1000.0;
+  let num_samples: u64 = (fcn1.get_duration() * sample_rate_hz).floor() as u64;
 
-    let path = Path::new( "tests/output/example1.csv" );
-    let display = path.display();
+  let path = Path::new("tests/output/example1.csv");
+  let display = path.display();
 
-    let mut file = match File::create(&path) {
-        Err(why) => panic!("Couldn't create {}: {}", display, why),
-        Ok(file) => file,
-    };
+  let mut file = match File::create(&path) {
+    Err(why) => panic!("Couldn't create {}: {}", display, why),
+    Ok(file) => file,
+  };
 
-    for step in 0..num_samples {
-        let time = step as f64 / sample_rate_hz;
-        let amp = fcn1.generate( time );
+  for step in 0..num_samples {
+    let time = step as f64 / sample_rate_hz;
+    let amp = fcn1.generate(time);
 
-        match file.write_all( format!("{},{}\n", time, amp.unwrap()).as_bytes() ) {
-            Err(why) => panic!("Couldn't write to {}: {}", display, why),
-            Ok(_) => (),
-        }
+    match file.write_all(format!("{},{}\n", time, amp.unwrap()).as_bytes()) {
+      Err(why) => panic!("Couldn't write to {}: {}", display, why),
+      Ok(_) => (),
     }
+  }
 }
