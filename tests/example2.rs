@@ -1,5 +1,4 @@
 use piecewise_fcn_lib as pw;
-use pw::factory::interface::FunctionOutput;
 
 /// A simple piecewise function
 ///
@@ -7,7 +6,7 @@ use pw::factory::interface::FunctionOutput;
 /// domain interfaces and export the result to CSV so the user can visualize it.
 ///
 #[test]
-fn example1() {
+fn example2() {
   let factory = pw::factory::Factory;
   let mut fcn1 = pw::function::Function::new();
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], false));
@@ -16,6 +15,6 @@ fn example1() {
   pw::write_to_file(
     Box::new(fcn1),
     1000.0,
-    "tests/output/example1.csv".to_string(),
+    "tests/output/example2.csv".to_string(),
   );
 }
