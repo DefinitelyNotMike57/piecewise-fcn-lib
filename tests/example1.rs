@@ -18,23 +18,6 @@ fn example1() {
   fcn1.add_subfunction(factory.bump(1.0, (0.0, 1.0), 2.0, 0.0));
 
   let sample_rate_hz: f64 = 1000.0;
-  let num_samples: u64 = (fcn1.get_duration() * sample_rate_hz).floor() as u64;
+  pw::write_to_file( Box::new(fcn1), 1000.0, "tests/output/example1.csv".to_string() );
 
-  let path = Path::new("tests/output/example1.csv");
-  let display = path.display();
-
-  let mut file = match File::create(&path) {
-    Err(why) => panic!("Couldn't create {}: {}", display, why),
-    Ok(file) => file,
-  };
-
-  for step in 0..num_samples {
-    let time = step as f64 / sample_rate_hz;
-    let amp = fcn1.generate(time);
-
-    match file.write_all(format!("{},{}\n", time, amp.unwrap()).as_bytes()) {
-      Err(why) => panic!("Couldn't write to {}: {}", display, why),
-      Ok(_) => (),
-    }
-  }
 }
