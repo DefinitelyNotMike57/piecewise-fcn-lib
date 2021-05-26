@@ -9,31 +9,11 @@ pub mod bump;
 
 use interface::SubfunctionOutput;
 
-/// This is the factory interface for making subfunctions
-pub trait SubfunctionFactory {
-  /// Generator for the polynomial function
-  fn polynomial(
-    &self,
-    dur: f64,
-    interval: (f64, f64),
-    coeff: Vec<f64>,
-    reverse: bool,
-  ) -> Box<dyn SubfunctionOutput>;
-  /// Generator for the bump function
-  fn bump(
-    &self,
-    dur: f64,
-    interval: (f64, f64),
-    scale: f64,
-    offset: f64,
-  ) -> Box<dyn SubfunctionOutput>;
-}
-
 /// Factory to generate all subfunctions
 pub struct Factory;
 
-impl SubfunctionFactory for Factory {
-  fn polynomial(
+impl Factory {
+  pub fn polynomial(
     &self,
     dur: f64,
     interval: (f64, f64),
@@ -43,7 +23,7 @@ impl SubfunctionFactory for Factory {
     let new = Box::new(polynomial::Polynomial::new(dur, interval, coeff, reverse));
     new
   }
-  fn bump(
+  pub fn bump(
     &self,
     dur: f64,
     interval: (f64, f64),
