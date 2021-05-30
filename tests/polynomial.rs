@@ -34,7 +34,7 @@ fn polynomial_domain() {
   let factory = pw::factory::Factory;
   let mut fcn1 = pw::function::Function::new();
   fcn1.add_subfunction(factory.polynomial(1.0, (-1.0, 1.0), vec![0.0, 0.0, 1.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, ( 0.0, 1.0), vec![0.0, 0.0, 1.0], false));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (-1.0, 0.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (-5.0, 5.0), vec![0.0, 0.0, 1.0], false));
 
@@ -54,11 +54,16 @@ fn polynomial_coefficients() {
   let factory = pw::factory::Factory;
   let mut fcn1 = pw::function::Function::new();
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0,3.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0,3.0,4.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0,3.0,4.0,5.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0,3.0,4.0,5.0,6.0], false));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0, 2.0], false));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0, 2.0, 3.0], false));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0, 2.0, 3.0, 4.0], false));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0, 2.0, 3.0, 4.0, 5.0], false));
+  fcn1.add_subfunction(factory.polynomial(
+    1.0,
+    (0.0, 1.0),
+    vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+    false,
+  ));
 
   pw::write_to_file(
     Box::new(fcn1),
@@ -76,8 +81,8 @@ fn polynomial_coefficients() {
 fn polynomial_flip() {
   let factory = pw::factory::Factory;
   let mut fcn1 = pw::function::Function::new();
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0,0.0,1.0], false));
-  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0,0.0,1.0], true));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], false));
+  fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], true));
 
   pw::write_to_file(
     Box::new(fcn1),

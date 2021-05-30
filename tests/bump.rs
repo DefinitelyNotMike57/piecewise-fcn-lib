@@ -37,7 +37,7 @@ fn bump_interval() {
   let mut fcn1 = pw::function::Function::new();
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 1.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 0.0), 1.0, 0.0));
-  fcn1.add_subfunction(factory.bump(1.0, ( 0.0, 1.0), 1.0, 0.0));
+  fcn1.add_subfunction(factory.bump(1.0, (0.0, 1.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(1.0, (-2.0, 2.0), 1.0, 0.0));
 
   pw::write_to_file(

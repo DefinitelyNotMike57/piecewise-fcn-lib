@@ -8,6 +8,7 @@ pub struct Function {
   piecewise: Vec<Box<dyn FunctionOutput>>,
   delay: f64,
   fcn: Vec<Function>,
+  limits: Option<(f64, f64)>,
 }
 
 impl Function {
@@ -17,15 +18,20 @@ impl Function {
       piecewise: Vec::new(),
       delay: 0.0,
       fcn: Vec::new(),
+      limits: None,
     };
     out
   }
   /// Creates a new function with a delay offset
+  ///
+  /// A positive delay pushes this function back relative to other functions
+  /// and a negative value makes this function lead others.
   pub fn new_delay(delay: f64) -> Function {
     let out = Function {
       piecewise: Vec::new(),
       delay: delay,
       fcn: Vec::new(),
+      limits: None,
     };
     out
   }
@@ -35,6 +41,7 @@ impl Function {
     sub: Box<dyn FunctionOutput>,
   ) {
     self.piecewise.push(sub);
+    self.set_limits();
   }
   /// Supports addition of any other Function
   pub fn add_function(
@@ -42,40 +49,82 @@ impl Function {
     fcn: Function,
   ) {
     self.fcn.push(fcn);
+    self.set_limits();
+  }
+  fn get_delay(&self) -> f64 {
+    self.delay
+  }
+  /// Set the duration limits
+  ///
+  /// The parent function needs to know what the overall start/stop limits
+  /// of all the functions are. This will change each time a sub-function
+  /// is added to this function and when another function is added.
+  ///
+  /// It makes more sense to have multiple calls to this function during setup
+  /// than while the user is requesting the function values.
+  ///
+  fn set_limits(&mut self) {
+    // Find duration of the sub-functions first
+    let mut start: f64 = self.delay;
+    let mut stop: f64 = self.delay;
+    for domain in self.piecewise.iter() {
+      stop += domain.get_duration();
+    }
+
+    for fcn in self.fcn.iter() {
+      let fcn_dur = fcn.get_duration();
+      let fcn_delay = fcn.get_delay();
+      if fcn_delay < start {
+        start = fcn_delay;
+      }
+      if fcn_delay + fcn_dur > stop {
+        stop = fcn_delay + fcn_dur;
+      }
+    }
+    self.limits = Some((start, stop));
   }
 }
 
 impl FunctionOutput for Function {
   fn get_duration(&self) -> f64 {
-    let mut duration: f64 = self.delay;
-    for domain in self.piecewise.iter() {
-      duration += domain.get_duration();
-    }
-    for fcn in self.fcn.iter() {
-      let temp = fcn.get_duration();
-      if duration < temp {
-        duration = temp;
-      }
-    }
-    duration
+    let lim = self.limits.unwrap();
+    lim.1 - lim.0
   }
+  /// Generate for functions
+  ///
+  /// The value that gets passed into this function uses zero as the starting
+  /// reference point and progresses positively. Function trees that have delays
+  /// that move their absolute starting point away from zero will be shifted so
+  /// the overall function starts at zero.
   fn generate(
     &self,
     x: f64,
   ) -> Option<f64> {
-    if x >= self.get_duration() {
+    print!("{:?}\n", x );
+    if (x >= self.get_duration()) && (x <0.0) {
       return None;
     }
     let mut result: f64 = 0.0;
-    let mut rel_time = x - self.delay;
+
+    // function time is the value between the limits that the input time (referenced to zero)
+    // corresponds too.
+    let mut fcn_time = x + self.limits.unwrap().0 - self.delay;
+
+    // loop through this function first
     for domain in self.piecewise.iter() {
-      if (rel_time < domain.get_duration()) && (rel_time >= 0.0) {
-        result = domain.generate(rel_time).unwrap();
-      }
-      rel_time -= domain.get_duration();
+        result += match domain.generate(fcn_time) {
+          None => 0.0,
+          Some(y) => y,
+        };
+        fcn_time -= domain.get_duration();
     }
+
+    // Now loop through other functions using the original input
     for fcn in self.fcn.iter() {
-      result += fcn.generate(x).unwrap();
+      result += match fcn.generate(x) {
+        None => 0.0,
+        Some(y) => y,
+      };
     }
     Some(result)
   }
@@ -125,8 +174,13 @@ mod tests {
   #[test]
   fn delay() {
     let factory = factory::Factory;
+    //let mut a = Function::new_delay(1.0);
     let mut a = Function::new();
-    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![2.0], false));
+    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0,2.0], false));
+    print!("{:?}", a.get_duration() );
+    assert_eq!( Some(0.0), a.generate(0.0) );
+    assert_eq!( None, a.generate(1.0) );
+    /*
     let mut b = Function::new_delay(0.25);
     b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![2.0], false));
     let mut c = Function::new_delay(0.5);
@@ -137,12 +191,16 @@ mod tests {
     b.add_function(c);
     a.add_function(b);
 
-    assert_eq!(Some(2.0), a.generate(0.125));
-    assert_eq!(Some(4.0), a.generate(0.375));
-    assert_eq!(Some(6.0), a.generate(0.625));
-    assert_eq!(Some(8.0), a.generate(0.875));
-    assert_eq!(Some(6.0), a.generate(1.125));
-    assert_eq!(Some(4.0), a.generate(1.375));
-    assert_eq!(Some(2.0), a.generate(1.625));
+    // Test duration of entire function
+    assert_eq!(1.75, a.get_duration());
+
+    assert_eq!(Some(2.0), a.generate(0.125 + 0.25 * 0.0));
+    assert_eq!(Some(4.0), a.generate(0.125 + 0.25 * 1.0));
+    assert_eq!(Some(6.0), a.generate(0.125 + 0.25 * 2.0));
+    assert_eq!(Some(8.0), a.generate(0.125 + 0.25 * 3.0));
+    assert_eq!(Some(6.0), a.generate(0.125 + 0.25 * 4.0));
+    assert_eq!(Some(4.0), a.generate(0.125 + 0.25 * 5.0));
+    assert_eq!(Some(2.0), a.generate(0.125 + 0.25 * 6.0));
+    */
   }
 }
