@@ -35,7 +35,8 @@ pub fn write_to_file(
 ) {
   // Use floor because a value >= to the exact duration will return None
   // and floor is the safer bet.
-  let num_samples: u64 = (fcn.get_duration() * sample_rate_hz).floor() as u64;
+  let limits = fcn.get_limits();
+  let num_samples: u64 = ((limits.1-limits.0) * sample_rate_hz).floor() as u64;
 
   let path = Path::new(&file_name);
   let display = path.display();
@@ -46,10 +47,10 @@ pub fn write_to_file(
   };
 
   for step in 0..num_samples {
-    let time = step as f64 / sample_rate_hz;
-    let amp = fcn.generate(time);
+    let time = step as f64 / sample_rate_hz + limits.0;
+    let value = fcn.generate(time);
 
-    match file.write_all(format!("{},{}\n", time, amp.unwrap()).as_bytes()) {
+    match file.write_all(format!("{},{}\n", time, value.unwrap()).as_bytes()) {
       Err(why) => panic!("Couldn't write to {}: {}", display, why),
       Ok(_) => (),
     }

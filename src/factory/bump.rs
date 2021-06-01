@@ -40,8 +40,8 @@ impl Bump {
 }
 
 impl FunctionOutput for Bump {
-  fn get_duration(&self) -> f64 {
-    self.duration
+  fn get_limits(&self) -> (f64,f64) {
+    (0.0,self.duration)
   }
   fn generate(
     &self,

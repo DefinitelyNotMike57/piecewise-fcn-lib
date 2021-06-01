@@ -8,7 +8,7 @@ pub struct Function {
   piecewise: Vec<Box<dyn FunctionOutput>>,
   delay: f64,
   fcn: Vec<Function>,
-  limits: Option<(f64, f64)>,
+  limits: (f64, f64),
 }
 
 impl Function {
@@ -18,7 +18,7 @@ impl Function {
       piecewise: Vec::new(),
       delay: 0.0,
       fcn: Vec::new(),
-      limits: None,
+      limits: (0.0,0.0),
     };
     out
   }
@@ -31,7 +31,7 @@ impl Function {
       piecewise: Vec::new(),
       delay: delay,
       fcn: Vec::new(),
-      limits: None,
+      limits: (0.0,0.0),
     };
     out
   }
@@ -51,9 +51,6 @@ impl Function {
     self.fcn.push(fcn);
     self.set_limits();
   }
-  fn get_delay(&self) -> f64 {
-    self.delay
-  }
   /// Set the duration limits
   ///
   /// The parent function needs to know what the overall start/stop limits
@@ -68,27 +65,26 @@ impl Function {
     let mut start: f64 = self.delay;
     let mut stop: f64 = self.delay;
     for domain in self.piecewise.iter() {
-      stop += domain.get_duration();
+      stop += domain.get_limits().1;
     }
 
+    // Find durations of other functions in this tree
     for fcn in self.fcn.iter() {
-      let fcn_dur = fcn.get_duration();
-      let fcn_delay = fcn.get_delay();
-      if fcn_delay < start {
-        start = fcn_delay;
+      let fcn_lim = fcn.get_limits();
+      if fcn_lim.0 < start {
+        start = fcn_lim.0;
       }
-      if fcn_delay + fcn_dur > stop {
-        stop = fcn_delay + fcn_dur;
+      if fcn_lim.1 > stop {
+        stop = fcn_lim.1;
       }
     }
-    self.limits = Some((start, stop));
+    self.limits = (start, stop);
   }
 }
 
 impl FunctionOutput for Function {
-  fn get_duration(&self) -> f64 {
-    let lim = self.limits.unwrap();
-    lim.1 - lim.0
+  fn get_limits(&self) -> (f64,f64) {
+    self.limits
   }
   /// Generate for functions
   ///
@@ -100,15 +96,15 @@ impl FunctionOutput for Function {
     &self,
     x: f64,
   ) -> Option<f64> {
-    print!("{:?}\n", x );
-    if (x >= self.get_duration()) && (x <0.0) {
+    if (x < self.limits.0) || (x >= self.limits.1) {
       return None;
     }
+    print!("{:#} {:#}\n", self.limits.0, self.limits.1 );
     let mut result: f64 = 0.0;
 
     // function time is the value between the limits that the input time (referenced to zero)
     // corresponds too.
-    let mut fcn_time = x + self.limits.unwrap().0 - self.delay;
+    let mut fcn_time = x - self.delay;
 
     // loop through this function first
     for domain in self.piecewise.iter() {
@@ -116,12 +112,12 @@ impl FunctionOutput for Function {
           None => 0.0,
           Some(y) => y,
         };
-        fcn_time -= domain.get_duration();
+        fcn_time -= domain.get_limits().1;
     }
 
     // Now loop through other functions using the original input
     for fcn in self.fcn.iter() {
-      result += match fcn.generate(x) {
+      result += match fcn.generate(x+self.limits.0) {
         None => 0.0,
         Some(y) => y,
       };
@@ -135,6 +131,9 @@ mod tests {
   use super::*;
   use crate::factory;
 
+  /// This is just a basic test of a single function with no delay and two sub-functions
+  /// chained together. This also confirms that functions are valid over the same domain
+  /// as sub-functions [0,duration)
   #[test]
   fn basic() {
     let mut a = Function::new();
@@ -142,22 +141,22 @@ mod tests {
 
     a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![7.0, 4.0, 8.0], false));
     a.add_subfunction(factory.polynomial(1.0, (-1.0, 1.0), vec![2.0, 0.0, -2.0], false));
-    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![7.0, 4.0, 8.0], true));
 
     let x: Vec<f64> = vec![
-      0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1., 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
-      1.9, 2., 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9,
-    ];
+      0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1., 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9 ];
     let y: Vec<f64> = vec![
       7., 7.48, 8.12, 8.92, 9.88, 11., 12.28, 13.72, 15.32, 17.08, 0., 0.72, 1.28, 1.68, 1.92, 2.,
-      1.92, 1.68, 1.28, 0.72, 19., 17.08, 15.32, 13.72, 12.28, 11., 9.88, 8.92, 8.12, 7.48, 7.,
+      1.92, 1.68, 1.28, 0.72, 19.,
     ];
 
     for i in x.into_iter().enumerate() {
       // round output to two decimal places for accurate comparison
       assert_eq!(y[i.0], (a.generate(i.1).unwrap() * 100.0).round() / 100.0);
     }
+    assert_eq!( None, a.generate( a.get_limits().1 ) );
   }
+
+  /// Demonstrates that two functions stacked together with zero delay are handled properly
   #[test]
   fn stacked() {
     let factory = factory::Factory;
@@ -171,36 +170,31 @@ mod tests {
       assert_eq!(Some(0.0), a.generate((x as f64) / 100.0));
     }
   }
+  /// Shows that stacked functions with a delay generate the correct function
   #[test]
-  fn delay() {
+  fn delay1() {
     let factory = factory::Factory;
-    //let mut a = Function::new_delay(1.0);
-    let mut a = Function::new();
+    let mut a = Function::new_delay(1.0);
+    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0], false));
+    assert_eq!( Some(1.0), a.generate(1.00) );
+    assert_eq!( Some(2.0), a.generate(1.50) );
+    assert_eq!( None     , a.generate(2.00) );
+  }
+  /// Shows that stacked functions with a delay generate the correct function
+  #[test]
+  fn delay2() {
+    let factory = factory::Factory;
+    let mut a = Function::new_delay(0.0);
     a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0,2.0], false));
-    print!("{:?}", a.get_duration() );
-    assert_eq!( Some(0.0), a.generate(0.0) );
-    assert_eq!( None, a.generate(1.0) );
-    /*
-    let mut b = Function::new_delay(0.25);
-    b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![2.0], false));
-    let mut c = Function::new_delay(0.5);
-    c.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![2.0], false));
-    let mut d = Function::new_delay(0.75);
-    d.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![2.0], false));
-    c.add_function(d);
-    b.add_function(c);
-    a.add_function(b);
-
-    // Test duration of entire function
-    assert_eq!(1.75, a.get_duration());
-
-    assert_eq!(Some(2.0), a.generate(0.125 + 0.25 * 0.0));
-    assert_eq!(Some(4.0), a.generate(0.125 + 0.25 * 1.0));
-    assert_eq!(Some(6.0), a.generate(0.125 + 0.25 * 2.0));
-    assert_eq!(Some(8.0), a.generate(0.125 + 0.25 * 3.0));
-    assert_eq!(Some(6.0), a.generate(0.125 + 0.25 * 4.0));
-    assert_eq!(Some(4.0), a.generate(0.125 + 0.25 * 5.0));
-    assert_eq!(Some(2.0), a.generate(0.125 + 0.25 * 6.0));
-    */
+    let mut b = Function::new_delay(0.5);
+    b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0], false));
+    a.add_function( b );
+    assert_eq!( Some(0.0 + 0.0), a.generate(0.00) );
+    assert_eq!( Some(0.5 + 0.0), a.generate(0.25) );
+    assert_eq!( Some(1.0 + 1.0), a.generate(0.50) );
+    assert_eq!( Some(1.5 + 1.5), a.generate(0.75) );
+    assert_eq!( Some(0.0 + 2.0), a.generate(1.00) );
+    assert_eq!( Some(0.0 + 2.5), a.generate(1.25) );
+    assert_eq!( None           , a.generate(1.50) );
   }
 }

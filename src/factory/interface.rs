@@ -4,7 +4,7 @@
 /// able to generate an output.
 pub trait FunctionOutput {
   /// Subfunction should be able to report how long it is
-  fn get_duration(&self) -> f64;
+  fn get_limits(&self) -> (f64,f64);
   /// Actually generate the function
   fn generate(
     &self,
