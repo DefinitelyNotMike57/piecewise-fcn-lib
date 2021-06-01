@@ -99,7 +99,6 @@ impl FunctionOutput for Function {
     if (x < self.limits.0) || (x >= self.limits.1) {
       return None;
     }
-    print!("{:#} {:#}\n", self.limits.0, self.limits.1 );
     let mut result: f64 = 0.0;
 
     // function time is the value between the limits that the input time (referenced to zero)
