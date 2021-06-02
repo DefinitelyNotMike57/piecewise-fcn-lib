@@ -116,7 +116,7 @@ impl FunctionOutput for Function {
 
     // Now loop through other functions using the original input
     for fcn in self.fcn.iter() {
-      result += match fcn.generate(x+self.limits.0) {
+      result += match fcn.generate(x) {
         None => 0.0,
         Some(y) => y,
       };
@@ -169,31 +169,108 @@ mod tests {
       assert_eq!(Some(0.0), a.generate((x as f64) / 100.0));
     }
   }
-  /// Shows that stacked functions with a delay generate the correct function
+  /// Confirm that two functions add correctly when given delays
+  ///        0.0      1.0         2.0         3.0
+  /// fcn1             [-----------)
+  /// fcn2    [--------------------------------)
   #[test]
-  fn delay1() {
+  fn stack_delay1() {
     let factory = factory::Factory;
     let mut a = Function::new_delay(1.0);
-    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0], false));
-    assert_eq!( Some(1.0), a.generate(1.00) );
+    let mut b = Function::new_delay(0.0);
+    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
+    b.add_subfunction(factory.polynomial(3.0, (0.0, 1.0), vec![1.0], false));
+    a.add_function( b );
+    assert_eq!( Some(1.0), a.generate(0.50) );
+    assert_eq!( Some(2.0), a.generate(1.00) );
     assert_eq!( Some(2.0), a.generate(1.50) );
-    assert_eq!( None     , a.generate(2.00) );
+    assert_eq!( Some(1.0), a.generate(2.00) );
+    assert_eq!( Some(1.0), a.generate(2.50) );
   }
-  /// Shows that stacked functions with a delay generate the correct function
+  /// Confirm that two functions add correctly when given delays
+  ///        0.0      1.0         2.0         3.0
+  /// fcn1    [--------------------------------)
+  /// fcn2             [-----------)
   #[test]
-  fn delay2() {
+  fn stack_delay2() {
     let factory = factory::Factory;
     let mut a = Function::new_delay(0.0);
-    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0,2.0], false));
-    let mut b = Function::new_delay(0.5);
-    b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0,2.0], false));
+    let mut b = Function::new_delay(1.0);
+    a.add_subfunction(factory.polynomial(3.0, (0.0, 1.0), vec![1.0], false));
+    b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
     a.add_function( b );
-    assert_eq!( Some(0.0 + 0.0), a.generate(0.00) );
-    assert_eq!( Some(0.5 + 0.0), a.generate(0.25) );
-    assert_eq!( Some(1.0 + 1.0), a.generate(0.50) );
-    assert_eq!( Some(1.5 + 1.5), a.generate(0.75) );
-    assert_eq!( Some(0.0 + 2.0), a.generate(1.00) );
-    assert_eq!( Some(0.0 + 2.5), a.generate(1.25) );
-    assert_eq!( None           , a.generate(1.50) );
+    assert_eq!( Some(1.0), a.generate(0.50) );
+    assert_eq!( Some(2.0), a.generate(1.00) );
+    assert_eq!( Some(2.0), a.generate(1.50) );
+    assert_eq!( Some(1.0), a.generate(2.00) );
+    assert_eq!( Some(1.0), a.generate(2.50) );
+  }
+  /// Confirm that two functions add correctly when given delays
+  ///       -1.0         0.0      1.0         2.0         3.0
+  /// fcn1    [-----------)
+  /// fcn2                         [-----------)
+  #[test]
+  fn stack_delay3() {
+    let factory = factory::Factory;
+    let mut a = Function::new_delay(-1.0);
+    let mut b = Function::new_delay(1.0);
+    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
+    b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
+    a.add_function( b );
+    assert_eq!( Some(1.0), a.generate(-1.00) );
+    assert_eq!( Some(0.0), a.generate( 0.00) );
+    assert_eq!( Some(1.0), a.generate( 1.00) );
+    assert_eq!( None     , a.generate( 2.00) );
+  }
+  /// Confirm that two functions add correctly when given delays
+  ///       -1.0         0.0      1.0         2.0         3.0
+  /// fcn1                         [-----------)
+  /// fcn2    [-----------)
+  #[test]
+  fn stack_delay4() {
+    let factory = factory::Factory;
+    let mut a = Function::new_delay(1.0);
+    let mut b = Function::new_delay(-1.0);
+    a.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
+    b.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
+    a.add_function( b );
+    assert_eq!( Some(1.0), a.generate(-1.00) );
+    assert_eq!( Some(0.0), a.generate( 0.00) );
+    assert_eq!( Some(1.0), a.generate( 1.00) );
+    assert_eq!( None     , a.generate( 2.00) );
+  }
+  /// Confirm that two functions add correctly when given delays
+  ///       -1.0         0.0      1.0         2.0         3.0
+  /// fcn1                [--------------------)
+  /// fcn2    [--------------------)
+  #[test]
+  fn stack_delay5() {
+    let factory = factory::Factory;
+    let mut a = Function::new_delay(0.0);
+    let mut b = Function::new_delay(-1.0);
+    a.add_subfunction(factory.polynomial(2.0, (0.0, 1.0), vec![1.0], false));
+    b.add_subfunction(factory.polynomial(2.0, (0.0, 1.0), vec![1.0], false));
+    a.add_function( b );
+    assert_eq!( Some(1.0), a.generate(-1.00) );
+    assert_eq!( Some(2.0), a.generate( 0.00) );
+    assert_eq!( Some(1.0), a.generate( 1.00) );
+    assert_eq!( None     , a.generate( 2.00) );
+  }
+  /// Confirm that two functions add correctly when given delays
+  ///       -1.0         0.0      1.0         2.0         3.0
+  /// fcn1    [--------------------)
+  /// fcn2                [--------------------)
+  #[test]
+  fn stack_delay6() {
+    let factory = factory::Factory;
+    let mut a = Function::new_delay(-1.0);
+    let mut b = Function::new_delay(0.0);
+    a.add_subfunction(factory.polynomial(2.0, (0.0, 1.0), vec![1.0], false));
+    b.add_subfunction(factory.polynomial(2.0, (0.0, 1.0), vec![1.0], false));
+    a.add_function( b );
+    assert_eq!( Some(1.0), a.generate(-1.00) );
+    assert_eq!( Some(2.0), a.generate( 0.00) );
+    assert_eq!( Some(1.0), a.generate( 1.00) );
+    assert_eq!( None     , a.generate( 2.00) );
   }
 }
