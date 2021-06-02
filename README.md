@@ -27,10 +27,14 @@ The code segment below is how you would synthesize the piecewise
 function shown in the image below.
 
 ```rust
-let mut fcn = Function::new();
-fcn.add_domain(subfcn::Polynomial::new(0.5,vec![-1.0,1.0],vec![-2.0,0.0,2.0],false));
-fcn.add_domain(subfcn::Polynomial::new(1.0,vec![0.0,1.0],vec![0.0,4.0],false));
-fcn.add_domain(subfcn::Polynomial::new(3.0,vec![0.0,1.5],vec![4.0,0.0,-4.0],false));
+use piecewise_fcn_lib as pw;
+
+let factory = pw::Factory;
+let mut fcn = pw::Function::new();
+
+fcn.add_subfunction(factory::polynomial(0.5,vec![-1.0,1.0],vec![-2.0,0.0,2.0],false));
+fcn.add_subfunction(factory::polynomial(1.0,vec![0.0,1.0],vec![0.0,4.0],false));
+fcn.add_subfunction(factory::polynomial(3.0,vec![0.0,1.5],vec![4.0,0.0,-4.0],false));
 ```
 
 ### Function 1
