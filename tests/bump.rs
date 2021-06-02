@@ -9,8 +9,8 @@ use piecewise_fcn_lib as pw;
 ///
 #[test]
 fn bump_duration() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 1.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(2.0, (-1.0, 1.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(4.0, (-1.0, 1.0), 1.0, 0.0));
@@ -33,8 +33,8 @@ fn bump_duration() {
 ///
 #[test]
 fn bump_interval() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 1.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 0.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(1.0, (0.0, 1.0), 1.0, 0.0));
@@ -55,8 +55,8 @@ fn bump_interval() {
 ///
 #[test]
 fn bump_scale_offset() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 1.0), 1.0, 0.0));
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 1.0), 2.0, 0.0));
   fcn1.add_subfunction(factory.bump(1.0, (-1.0, 1.0), 1.0, 1.0));

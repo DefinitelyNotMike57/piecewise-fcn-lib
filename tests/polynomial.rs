@@ -9,8 +9,8 @@ use piecewise_fcn_lib as pw;
 ///
 #[test]
 fn polynomial_duration() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.polynomial(0.5, (-1.0, 1.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (-1.0, 1.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(2.0, (-1.0, 1.0), vec![0.0, 0.0, 1.0], false));
@@ -31,8 +31,8 @@ fn polynomial_duration() {
 /// region.
 #[test]
 fn polynomial_domain() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.polynomial(1.0, (-1.0, 1.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (-1.0, 0.0), vec![0.0, 0.0, 1.0], false));
@@ -51,8 +51,8 @@ fn polynomial_domain() {
 /// results in 1.0*x^0 + 2.0*x^1 + 3.0*x^2 and so on.
 #[test]
 fn polynomial_coefficients() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0, 2.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![1.0, 2.0, 3.0], false));
@@ -79,8 +79,8 @@ fn polynomial_coefficients() {
 /// forward.
 #[test]
 fn polynomial_flip() {
-  let factory = pw::factory::Factory;
-  let mut fcn1 = pw::function::Function::new();
+  let factory = pw::Factory;
+  let mut fcn1 = pw::Function::new();
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], false));
   fcn1.add_subfunction(factory.polynomial(1.0, (0.0, 1.0), vec![0.0, 0.0, 1.0], true));
 

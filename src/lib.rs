@@ -21,6 +21,9 @@ pub mod factory;
 /// Module that manages functions
 pub mod function;
 
+pub use factory::Factory;
+pub use function::Function;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
