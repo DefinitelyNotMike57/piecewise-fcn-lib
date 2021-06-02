@@ -10,6 +10,11 @@ piecewise-fcn-lib is distributed under the [MIT License](LICENSE.txt).
 
 ## Quick Start
 
+```cargo test``` executes the unit test framework but the integration
+tests in the ```tests/``` directory are more examples and write their
+output to ```tests/output/```. They cover all of the different features
+available from this library.
+
 ### Installation
 
 Add the following line to your Cargo.toml __dependendies__ section.
